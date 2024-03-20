@@ -46,12 +46,18 @@ int main(){
     scanf("%d", &n);
     Matriz = (double **)malloc(n*sizeof(double *));
 
-    for(int i=0; i<=n+1; ++i){
-        Matriz[i] = (double *)malloc(n*sizeof(double));
-        for(int j=0; j<n; ++j){
+    for(int i=0; i<n; ++i){
+        Matriz[i] = (double *)malloc((n+1)*sizeof(double));
+        for(int j=0; j<=n; ++j){
             scanf("%lf", &Matriz[i][j]);
-            b = Matriz[n+1];
         }
     }
-
+    // mostra a matriz lida
+    for(int i=0; i<=n; ++i){
+        for(int j=0; j<=n; ++j){
+            printf("%lf ", Matriz[i][j]);
+        }
+        printf("\n");
+    }
+    //eliminacaoDeGauss(Matriz, b, n);
 }
