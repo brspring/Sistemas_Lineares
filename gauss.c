@@ -81,3 +81,12 @@ int main(){
     free(Matriz);
     free(b);
 }
+
+/*
+EXEMPLO 
+
+3
+1 -3 2 11
+-2 8 -1 -15
+4 -6 5 29
+*/
