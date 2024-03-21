@@ -61,8 +61,11 @@ int main(){
             }
         }
     }
+
+    eliminacaoDeGauss(Matriz, b, n);
+    
     // mostra a matriz lida
-    for(int i=0; i<n; ++i){
+    /*for(int i=0; i<n; ++i){
         for(int j=0; j<=n; ++j){
             if (j == n )
                 printf("%lf", b[i]);
@@ -70,8 +73,8 @@ int main(){
                 printf("%lf ", Matriz[i][j]);
         }
         printf("\n");
-    }
-    //eliminacaoDeGauss(Matriz, b, n);
+    }*/
+    
     for(int i = 0; i < n; ++i){
         free(Matriz[i]);
     }
