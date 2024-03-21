@@ -28,7 +28,7 @@ void trocaLinhas(double **A, double *b, int i, int j){
 
 void eliminacaoDeGauss(double **A, double *b, uint n){
     for(int i=0; i<n; ++i){
-        uint iPivo = encontraMax(A, i, n);
+        uint iPivo = encontraMax(A, i);
         if(i != iPivo)
             trocaLinhas(A, b, i, iPivo);
 
