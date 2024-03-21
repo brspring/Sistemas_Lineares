@@ -50,7 +50,7 @@ int main(){
         Matriz[i] = (double *)malloc((n+1)*sizeof(double));
         for(int j=0; j<=n+1; ++j){
             if(j=n+1)
-                scanf("%lf", &b[i]);
+                scanf("%lf", b[i]);
             else
                 scanf("%lf", &Matriz[i][j]);
         }
