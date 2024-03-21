@@ -49,8 +49,8 @@ int main(){
     for(int i=0; i<n; ++i){
         //Matriz[i] = (double *)malloc((n+1)*sizeof(double));
         for(int j=0; j<=n; ++j){
-            if(j=n){
-                scanf("%lf", b[i]);
+            if(j==n){
+                scanf("%lf", &b[i]);
             }else{
                 scanf("%lf", &Matriz[i][j]);
             }
