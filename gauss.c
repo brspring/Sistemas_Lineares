@@ -71,6 +71,7 @@ int main(){
     eliminacaoDeGauss(Matriz, b, n);
 
     // mostra a matriz lida
+    printf("------- Matriz resultante -------\n");
     for(int i=0; i<n; ++i){
         for(int j=0; j<=n; ++j){
             if (j == n )
