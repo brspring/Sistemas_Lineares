@@ -44,15 +44,16 @@ int main(){
     int n;
     //leitura de Matriz e b
     scanf("%d", &n);
-    Matriz = (double **)malloc(n*sizeof(double *));
+    //Matriz = (double **)malloc(n*sizeof(double *));
 
     for(int i=0; i<n; ++i){
-        Matriz[i] = (double *)malloc((n+1)*sizeof(double));
+        //Matriz[i] = (double *)malloc((n+1)*sizeof(double));
         for(int j=0; j<=n; ++j){
-            if(j=n)
+            if(j=n){
                 scanf("%lf", b[i]);
-            else
+            }else{
                 scanf("%lf", &Matriz[i][j]);
+            }
         }
     }
     // mostra a matriz lida
