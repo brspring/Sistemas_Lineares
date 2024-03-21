@@ -44,11 +44,16 @@ int main(){
     int n;
     //leitura de Matriz e b
     scanf("%d", &n);
-    //Matriz = (double **)malloc(n*sizeof(double *));
 
-    for(int i=0; i<n; ++i){
-        //Matriz[i] = (double *)malloc((n+1)*sizeof(double));
-        for(int j=0; j<=n; ++j){
+   // Alocando memória para a matriz
+    Matriz = (double **)malloc(n * sizeof(double *));
+    
+    // Alocando memória para o vetor b
+    b = (double *)malloc(n * sizeof(double));
+
+    for(int i=0; i < n; ++i){
+        Matriz[i] = (double *)malloc((n + 1) * sizeof(double));
+        for(int j=0; j <= n; ++j){
             if(j==n){
                 scanf("%lf", &b[i]);
             }else{
@@ -64,4 +69,9 @@ int main(){
         printf("\n");
     }
     //eliminacaoDeGauss(Matriz, b, n);
+    for(int i = 0; i < n; ++i){
+        free(Matriz[i]);
+    }
+    free(Matriz);
+    free(b);
 }
