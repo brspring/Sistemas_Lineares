@@ -35,14 +35,11 @@ void eliminacaoDeGauss(double **A, double *b, uint n){
 
         for(int k=i+1; k < n; ++k){
             double m = A[k][i]/A[i][i];
-            printf("teste");
-            A[k][i] = 0;
-            for(int j=i; j<n; ++j){
-                A[k][j] -= m*A[i][j];
+            A[k][i] = 0.00;
+            for(int j=i+1; j<n; ++j){
+                A[k][j] -= A[i][j] * m;
             }
-            printf("teste2");
             b[k] -= m * b[i];
-            printf("teste3");
         }        
             
     }
