@@ -62,9 +62,12 @@ int main(){
         }
     }
     // mostra a matriz lida
-    for(int i=0; i<=n; ++i){
+    for(int i=0; i<n; ++i){
         for(int j=0; j<=n; ++j){
-            printf("%lf ", Matriz[i][j]);
+            if (j == n )
+                printf("%lf", b[i]);
+            else
+                printf("%lf ", Matriz[i][j]);
         }
         printf("\n");
     }
