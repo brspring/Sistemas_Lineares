@@ -3,11 +3,11 @@
 #include <math.h>
 
 
-int encontraMax(double **A, int i) {
+int encontraMax(double **A, int i, uint n) {
     double maxValor = fabs(A[i][0]);
     int indiceMax = 0;
 
-    for (int j = 1; A[i][j] != '\0'; j++) {
+    for (int j = 1; j < n; j++) {
         if (fabs(A[i][j]) > maxValor) {
             maxValor = fabs(A[i][j]);
             indiceMax = j;
@@ -17,19 +17,19 @@ int encontraMax(double **A, int i) {
     return indiceMax;
 }
 
-void trocaLinhas(double **A, double *b, int i, int j){
+void trocaLinhas(double **A, double *b, int i, int iPivo){
     double *aux = A[i];
-    A[i] = A[j];
-    A[j] = aux;
+    A[i] = A[iPivo];
+    A[iPivo] = aux;
 
     double auxB = b[i];
-    b[i] = b[j];
-    b[j] = auxB;
+    b[i] = b[iPivo];
+    b[iPivo] = auxB;
 }
 
 void eliminacaoDeGauss(double **A, double *b, uint n){
     for(int i=0; i<n; ++i){
-        uint iPivo = encontraMax(A, i);
+        uint iPivo = encontraMax(A, i, n);
         if(i != iPivo)
             trocaLinhas(A, b, i, iPivo);
 
