@@ -2,13 +2,18 @@
 #include <stdlib.h>
 
 
-int encontraMax(double **A, int i, int n){
-    int max = A[i][0];
-    for(int j=1; j<n; ++j){
-        if(A[i][j] > max)
-            max = j;
+int encontraMax(double **A, int i) {
+    double maxValor = fabs(A[i][0]);
+    int indiceMax = 0;
+
+    for (int j = 1; A[i][j] != '\0'; j++) {
+        if (fabs(A[i][j]) > maxValor) {
+            maxValor = fabs(A[i][j]);
+            indiceMax = j;
+        }
     }
-    return max;
+
+    return indiceMax;
 }
 
 void trocaLinhas(double **A, double *b, int i, int j){
@@ -21,9 +26,9 @@ void trocaLinhas(double **A, double *b, int i, int j){
     b[j] = auxB;
 }
 
-void eliminacaoDeGauss(double **A, double *b, int n){
+void eliminacaoDeGauss(double **A, double *b, uint n){
     for(int i=0; i<n; ++i){
-        int iPivo = encontraMax(A, i, n);
+        uint iPivo = encontraMax(A, i, n);
         if(i != iPivo)
             trocaLinhas(A, b, i, iPivo);
 
@@ -41,7 +46,7 @@ void eliminacaoDeGauss(double **A, double *b, int n){
 int main(){
     double **Matriz;
     double *b;
-    int n;
+    uint n;
     //leitura de Matriz e b
     scanf("%d", &n);
 
