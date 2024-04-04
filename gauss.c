@@ -27,7 +27,8 @@ void trocaLinhas(double **A, double *b, int i, int iPivo){
     b[iPivo] = auxB;
 }
 
-void eliminacaoDeGauss(double **A, double *b, uint n){
+void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
+    //triangularizacao
     for(int i=0; i<n; ++i){
         uint iPivo = encontraMax(A, i, n);
         if(i != iPivo)
@@ -41,10 +42,41 @@ void eliminacaoDeGauss(double **A, double *b, uint n){
             }
             b[k] -= m * b[i];
         }        
-            
+    //retrosubstituicao
+    for(int i = n-1; i >= 0; --i){
+        x[i] = b [i];
+        for(int j = i+1; j < n; ++j)
+            x[i] -= A[i][j] * x[j];
+        x[i] /= A[i][i]
+    }
     }
 }
 
+void gaussSeidel(double A**, double *b, double *x, uint n, double tol){
+    double erro = 1.0 + tol;
+    int j, s;
+    while(erro < tol){
+        for(int i = 0; i < n; i++)
+            for(s=0, j=0; j < n; ++j)
+                if(i != j)
+                    s += A[i][j] * x[j];
+
+    x[i] = (b[i] - s)/A[i][i];
+    }
+}
+
+void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, uint n, double tol){
+    double erro = 1.0 + tol;
+    int j, s;
+    while(erro < tol){
+        for(int i = 0; i < n; i++)
+            for(s=0, j=0; j < n; ++j)
+                if(i != j)
+                    s += A[i][j] * x[j];
+
+    x[i] = (b[i] - s)/A[i][i];
+    }
+}
 void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
     //Triangularizacao
     for(int i = 0; i < n-1; ++i){
@@ -102,9 +134,9 @@ int main(){
             }   
     }
 
-    //eliminacaoDeGauss(Matriz, b, n);
+    eliminacaoDeGauss(Matriz, b, x, n);
     //tempo = timestemp()
-    eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
+    //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //timestemp() - tempo
 
     printf("Solução do sistema:\n");
