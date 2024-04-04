@@ -47,36 +47,36 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
         x[i] = b [i];
         for(int j = i+1; j < n; ++j)
             x[i] -= A[i][j] * x[j];
-        x[i] /= A[i][i]
+        x[i] /= A[i][i];
     }
     }
 }
 
-void gaussSeidel(double A**, double *b, double *x, uint n, double tol){
-    double erro = 1.0 + tol;
-    int j, s;
-    while(erro < tol){
-        for(int i = 0; i < n; i++)
-            for(s=0, j=0; j < n; ++j)
-                if(i != j)
-                    s += A[i][j] * x[j];
+// void gaussSeidel(double A**, double *b, double *x, uint n, double tol){
+//     double erro = 1.0 + tol;
+//     int j, s;
+//     while(erro < tol){
+//         for(int i = 0; i < n; i++)
+//             for(s=0, j=0; j < n; ++j)
+//                 if(i != j)
+//                     s += A[i][j] * x[j];
 
-    x[i] = (b[i] - s)/A[i][i];
-    }
-}
+//     x[i] = (b[i] - s)/A[i][i];
+//     }
+// }
 
-void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, uint n, double tol){
-    double erro = 1.0 + tol;
-    int j, s;
-    while(erro < tol){
-        for(int i = 0; i < n; i++)
-            for(s=0, j=0; j < n; ++j)
-                if(i != j)
-                    s += A[i][j] * x[j];
+// void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, uint n, double tol){
+//     double erro = 1.0 + tol;
+//     int j, s;
+//     while(erro < tol){
+//         for(int i = 0; i < n; i++)
+//             for(s=0, j=0; j < n; ++j)
+//                 if(i != j)
+//                     s += A[i][j] * x[j];
 
-    x[i] = (b[i] - s)/A[i][i];
-    }
-}
+//     x[i] = (b[i] - s)/A[i][i];
+//     }
+// }
 void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
     //Triangularizacao
     for(int i = 0; i < n-1; ++i){
