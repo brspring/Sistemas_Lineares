@@ -45,28 +45,25 @@ void eliminacaoDeGauss(double **A, double *b, uint n){
     }
 }
 
-void eliminacaoDeGaussTriDiagonais(double **A, double *b, int n){
+void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, int n){
     for(int i=0; i<n; ++i){
-        //uint iPivo = encontraMax(A, i, n);
-        //if(i != iPivo)
-            //trocaLinhas(A, b, i, iPivo);
             int k = i+1;
-            double m = A[k][i]/A[i][i];
-            A[k][i] = 0.00;
+            double m = a[i]/d[i];
+            a[i] = 0.00;
+
             int j = i+1;
-            
-            A[k][j] -= A[i][j] * m;
-            b[k] -= m * b[i];     
-            printf("valor do i = q %d\n", i); 
-            
+
+            d[i+1] -= c[i] * m;
+            b[i+1] -= b[i] * m;     
     }
 }
 
 int main(){
     double **Matriz;
-    double *b;
+    double *a, *b, *c, *d;
     int n;
-    //leitura de Matriz e b
+
+    //leitura dimensoes da mateiz
     scanf("%d", &n);
 
    // Alocando memória para a matriz
@@ -75,52 +72,37 @@ int main(){
     // Alocando memória para o vetor b
     b = (double *)malloc(n * sizeof(double));
 
+    // Alocando memória para os vetores da matriz tridiagonal
+    d = (double *)malloc(n * sizeof(double));
+    a = (double *)malloc(n * sizeof(double)); 
+    c = (double *)malloc(n*  sizeof(double));
+
+    // Lendo a matriz e o vetor b
     for(int i=0; i < n; ++i){
         Matriz[i] = (double *)malloc((n + 1) * sizeof(double));
         for(int j=0; j <= n; ++j){
             if(j==n){
                 scanf("%lf", &b[i]);
-                //printf("b[%d] = %.2f\n", i, b[i]);
             }else{
                 scanf("%lf", &Matriz[i][j]);
             }
         }
     }
-    /*double *d = (double *)malloc(n * sizeof(double));
-    double *a = (double *)malloc((n-1) * sizeof(double)); 
-    double *c = (double *)malloc((n-1) * sizeof(double));*/
-    double d[n];
-    double a[n-1];
-    double c[n-1];
 
     // vetores matriz tridiagonais 
-    for(int i=0; i<n; ++i){
-        for(int j=0; j<n; ++j){
-            if(i == j)
-                d[i] = Matriz[i][j];
-            if(i == j-1)
-                a[i] = Matriz[i][j];
-            if(i == j+1){
-                c[i] = Matriz[i][j];
-                printf("i: \n", i, c[i]);
-            }
-                
-        }
+    for(int i = 0; i < n; ++i){
+            d[i] = Matriz[i][i];
+            if(i < n-1){
+                a[i] = Matriz[i][i+1];
+                c[i] = Matriz[i+1][i];
+            }   
     }
 
-    //printando os 3 vetores 
-    for(int i=0; i<n; ++i){
-        printf("d[%d] = %.2f\n", i, d[i]);
-    }
-    for(int i=0; i<n-1; ++i){
-        printf("a[%d] = %.2f\n", i, a[i]);
-    }
-    for(int i=0; i<n-1; ++i){
-        printf("c[%d] = %.2f\n", i, c[i]);
-    }
+    //eliminacaoDeGauss(Matriz, b, n);
     //tempo = timestemp()
-    //eliminacaoDeGaussTriDiagonais(Matriz, b, n);
+    eliminacaoDeGaussTriDiagonais(a, d, c, b, n);
     //timestemp() - tempo
+
     
     // mostra a matriz lida fazer funcao
     printf("------- Matriz resultante -------\n");
@@ -133,14 +115,27 @@ int main(){
         }
         printf("\n");
     }
-    
+    //printando os 3 vetores 
+    for(int i=0; i<n; ++i)
+        printf("d[%d] = %.2f\n", i, d[i]);
+    printf("\n");
+    for(int i=0; i<n-1; ++i)
+        printf("a[%d] = %.2f\n", i, a[i]);
+    printf("\n");
+    for(int i=0; i<n-1; ++i)
+        printf("c[%d] = %.2f\n", i, c[i]);
+    printf("\n");
+
+    //liberando memoria
     for(int i = 0; i < n; ++i){
         free(Matriz[i]);
     }
     free(Matriz);
+    free(a);
     free(b);
+    free(d);
+    free(c);
 }
-
 /*
 EXEMPLO 
 
@@ -148,4 +143,16 @@ EXEMPLO
 1 -3 2 11
 -2 8 -1 -15
 4 -6 5 29
+
+4
+4 -1 0 0 3
+-1 4 -1 0 6
+0 -1 4 -1 1
+0 0 -1 4 12
+
+4
+2 1 0 0 5
+3 4 2 0 6
+0 2 5 1 7
+0 0 3 6 8
 */
