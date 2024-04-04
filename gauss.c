@@ -142,6 +142,7 @@ int main(){
     free(b);
     free(d);
     free(c);
+    free(x);
 }
 /*
 EXEMPLO 
