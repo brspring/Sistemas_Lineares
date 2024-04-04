@@ -29,9 +29,9 @@ void trocaLinhas(double **A, double *b, int i, int iPivo){
 
 void eliminacaoDeGauss(double **A, double *b, uint n){
     for(int i=0; i<n; ++i){
-        //uint iPivo = encontraMax(A, i, n);
-        //if(i != iPivo)
-            //trocaLinhas(A, b, i, iPivo);
+        uint iPivo = encontraMax(A, i, n);
+        if(i != iPivo)
+            trocaLinhas(A, b, i, iPivo);
 
         for(int k=i+1; k < n; ++k){
             double m = A[k][i]/A[i][i];
@@ -45,22 +45,25 @@ void eliminacaoDeGauss(double **A, double *b, uint n){
     }
 }
 
-void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, int n){
-    for(int i=0; i<n; ++i){
+void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
+    //Triangularizacao
+    for(int i = 0; i < n-1; ++i){
             int k = i+1;
             double m = a[i]/d[i];
-            a[i] = 0.00;
-
-            int j = i+1;
-
+            a[i] = 0;
             d[i+1] -= c[i] * m;
             b[i+1] -= b[i] * m;     
+    }
+    //Retrosubstituicao
+    x[n-1] = b[n-1] / d[n-1];
+    for (int i = n-2; i >= 0; i--) {
+        x[i] = (b[i] - c[i] * x[i+1]) / d [i];
     }
 }
 
 int main(){
     double **Matriz;
-    double *a, *b, *c, *d;
+    double *a, *b, *c, *d, *x;
     int n;
 
     //leitura dimensoes da mateiz
@@ -76,6 +79,7 @@ int main(){
     d = (double *)malloc(n * sizeof(double));
     a = (double *)malloc(n * sizeof(double)); 
     c = (double *)malloc(n*  sizeof(double));
+    x = (double *)malloc(n*  sizeof(double));
 
     // Lendo a matriz e o vetor b
     for(int i=0; i < n; ++i){
@@ -100,10 +104,13 @@ int main(){
 
     //eliminacaoDeGauss(Matriz, b, n);
     //tempo = timestemp()
-    eliminacaoDeGaussTriDiagonais(a, d, c, b, n);
+    eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //timestemp() - tempo
 
-    
+    printf("Solução do sistema:\n");
+    for (int i = 0; i < n; ++i) {
+        printf("x[%d] = %.2f\n", i, x[i]);
+    }
     // mostra a matriz lida fazer funcao
     printf("------- Matriz resultante -------\n");
     for(int i=0; i<n; ++i){
