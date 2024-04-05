@@ -28,9 +28,10 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
         }
     }
 
-    //Calcula o vetor de residuos r = b - Ax
+    //Calcula o vetor de residuo
     for (int i = 0; i < n; ++i) {
         residuo[i] = Ax[i] - b[i];
+        printf("valor Ax[%d] = %.2f/n Valor b[%d] = %.2f\n", i, Ax[i], i, b[i]);
     }
 
      //Libera memoria alocada
