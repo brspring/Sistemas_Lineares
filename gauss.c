@@ -25,14 +25,13 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
         Ax[i] = 0.0;
         for (int j = 0; j < n; ++j) {
             Ax[i] += A[i][j] * x[j];
-            printf("valor A[%d][%d] = %.2f Valor x[%d] = %.2f\n", i, j, A[i][j], j, x[j]);
         }
     }
 
     //Calcula o vetor de residuo
     for (int i = 0; i < n; ++i) {
         residuo[i] = Ax[i] - b[i];
-        printf("valor Ax[%d] = %.2f/n Valor b[%d] = %.2f\n", i, Ax[i], i, b[i]);
+
     }
 
      //Libera memoria alocada
@@ -170,7 +169,7 @@ int main(){
 
     printf("Residuo do sistema:\n");
     for (int i = 0; i < n; ++i) {
-        printf("residuo[%d] = %.2f\n", i, residuo[i]);
+        printf("residuo[%d] = %f\n", i, residuo[i]);
     }
 
     // mostra a matriz lida fazer funcao
