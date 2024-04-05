@@ -25,7 +25,7 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
         Ax[i] = 0.0;
         for (int j = 0; j < n; ++j) {
             Ax[i] += A[i][j] * x[j];
-            printf("valor A[%d][%d] = %.2f Valor x[%d] = %.2f\n", i, Ax[i][j], j, x[j]);
+            printf("valor A[%d][%d] = %.2f Valor x[%d] = %.2f\n", i, j, A[i][j], j, x[j]);
         }
     }
 
