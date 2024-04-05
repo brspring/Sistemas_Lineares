@@ -17,15 +17,25 @@ int encontraMax(double **A, int i, uint n) {
     return indiceMax;
 }
 
-void residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
+double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
+    double *Ax = (double *)malloc(n * sizeof(double));
+
+    //Calcula Ax
     for (int i = 0; i < n; ++i) {
-        residuo[i] = b[i];
+        Ax[i] = 0.0;
         for (int j = 0; j < n; ++j) {
-            residuo[i] -= A[i][j] * x[j];
+            Ax[i] += A[i][j] * x[j];
         }
     }
-}
 
+    //Calcula o vetor de residuos r = b - Ax
+    for (int i = 0; i < n; ++i) {
+        residuo[i] = Ax[i] - b[i];
+    }
+
+     //Libera memoria alocada
+    free(Ax);
+}
 void trocaLinhas(double **A, double *b, int i, int iPivo){
     double *aux = A[i];
     A[i] = A[iPivo];
