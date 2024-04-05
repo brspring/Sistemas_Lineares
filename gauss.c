@@ -187,12 +187,12 @@ int main(){
     tempo = timestamp() - tempo;
 
     printf("EG clássico:\n");
-    printf("%lf ms\n", tempo);
+    printf("%.8f ms\n", tempo);
     for (int i = 0; i < n; ++i)
         printf("%lf   ", x[i]);
     printf("\n");
     for (int i = 0; i < n; ++i)
-        printf("%lf  ", residuo[i]);
+        printf("%.12f  ", residuo[i]);
 
     printf("\n\n");
 
