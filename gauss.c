@@ -48,19 +48,15 @@ void trocaLinhas(double **A, double *b, int i, int iPivo){
 
 void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
     //triangularizacao
-    for(int i=0; i<n; ++i){
-        uint iPivo = encontraMax(A, i, n);
-        if(i != iPivo)
-            trocaLinhas(A, b, i, iPivo);
-
-        for(int k=i+1; k < n; ++k){
-            double m = A[k][i]/A[i][i];
-            A[k][i] = 0.00;
-            for(int j=i+1; j<n; ++j){
-                A[k][j] -= A[i][j] * m;
+    for (int i = 0; i < n-1; ++i) {
+        for (int k = i+1; k < n; ++k) {
+            double m = A[k][i] / A[i][i];
+            for (int j = i; j < n; ++j) {
+                A[k][j] -= m * A[i][j];
             }
             b[k] -= m * b[i];
-        }        
+        }
+    }
     //retrosubstituicao
     for(int i = n-1; i >= 0; --i){
         x[i] = b [i];
@@ -203,6 +199,9 @@ int main(){
     free(d);
     free(c);
     free(x);
+    free(residuo);
+
+    return 0;
 }
 /*
 EXEMPLO 
