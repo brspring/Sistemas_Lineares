@@ -3,6 +3,8 @@
 #include <math.h>
 #include <time.h>
 
+typedef double rtime_t;
+
 rtime_t timestamp (void)
 {
   struct timespec tp;
