@@ -17,25 +17,15 @@ int encontraMax(double **A, int i, uint n) {
     return indiceMax;
 }
 
-double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
-    double *Ax = (double *)malloc(n * sizeof(double));
-
-    //Calcula Ax
+void residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
     for (int i = 0; i < n; ++i) {
-        Ax[i] = 0.0;
+        residuo[i] = b[i];
         for (int j = 0; j < n; ++j) {
-            Ax[i] += A[i][j] * x[j];
+            residuo[i] -= A[i][j] * x[j];
         }
     }
-
-    //Calcula o vetor de residuos r = b - Ax
-    for (int i = 0; i < n; ++i) {
-        residuo[i] = b[i] - Ax[i];
-    }
-
-     //Libera memoria alocada
-    free(Ax);
 }
+
 void trocaLinhas(double **A, double *b, int i, int iPivo){
     double *aux = A[i];
     A[i] = A[iPivo];
@@ -48,22 +38,26 @@ void trocaLinhas(double **A, double *b, int i, int iPivo){
 
 void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
     //triangularizacao
-    for (int i = 0; i < n-1; ++i) {
-        for (int k = i+1; k < n; ++k) {
-            double m = A[k][i] / A[i][i];
-            for (int j = i; j < n; ++j) {
-                A[k][j] -= m * A[i][j];
+    for(int i=0; i<n; ++i){
+        uint iPivo = encontraMax(A, i, n);
+        if(i != iPivo)
+            trocaLinhas(A, b, i, iPivo);
+
+        for(int k=i+1; k < n; ++k){
+            double m = A[k][i]/A[i][i];
+            A[k][i] = 0.00;
+            for(int j=i+1; j<n; ++j){
+                A[k][j] -= A[i][j] * m;
             }
             b[k] -= m * b[i];
-        }
-    }
-    
+        }        
     //retrosubstituicao
     for(int i = n-1; i >= 0; --i){
         x[i] = b [i];
         for(int j = i+1; j < n; ++j)
             x[i] -= A[i][j] * x[j];
         x[i] /= A[i][i];
+    }
     }
 }
 
