@@ -30,7 +30,7 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
 
     //Calcula o vetor de residuos r = b - Ax
     for (int i = 0; i < n; ++i) {
-        r[i] = b[i] - Ax[i];
+        residuo[i] = b[i] - Ax[i];
     }
 
      //Libera memoria alocada
@@ -127,7 +127,7 @@ int main(){
     // Alocando memoria para o vetor b
     b = (double *)malloc(n * sizeof(double));
     // Alocando memoria vetor residuo
-    double *residuo = (double *)malloc(n * sizeof(double));
+    residuo = (double *)malloc(n * sizeof(double));
     // Alocando memória para os vetores da matriz tridiagonal
     d = (double *)malloc(n * sizeof(double));
     a = (double *)malloc(n * sizeof(double)); 
@@ -156,7 +156,7 @@ int main(){
     }
 
     eliminacaoDeGauss(Matriz, b, x, n);
-    residuoMatriz(A, x, b, residuo, n);
+    residuoMatriz(Matriz, x, b, residuo, n);
     //tempo = timestemp()
     //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //timestemp() - tempo
