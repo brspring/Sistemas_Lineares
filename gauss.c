@@ -12,6 +12,32 @@ rtime_t timestamp (void)
   return ( (rtime_t) tp.tv_sec*1.0e3 + (rtime_t) tp.tv_nsec*1.0e-6 );
 }
 
+double **alocaMatriz(int ordem)
+{
+    double **matriz;
+    matriz = (double **)calloc(ordem, sizeof(double *));
+    for (int i = 0; i < ordem; i++)
+        matriz[i] = (double *)calloc(ordem, sizeof(double));
+    return matriz;
+}
+
+void desalocaMatriz(double **matriz, int ordem)
+{
+    for (int i = 0; i < ordem; i++)
+        free(matriz[i]);
+    free(matriz);
+}
+
+void separaTridiagonais(double **Matriz, double *a, double *d, double *c){
+    for(int i = 0; i < n; ++i){
+            d[i] = Matriz[i][i];
+            if(i < n-1){
+                a[i] = Matriz[i][i+1];
+                c[i] = Matriz[i+1][i];
+            }   
+    }
+}
+
 int encontraMax(double **A, int i, uint n) {
     double maxValor = fabs(A[i][0]);
     int indiceMax = 0;
@@ -137,7 +163,6 @@ void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, d
 }
 
 int main(){
-    double **Matriz;
     double *a, *b, *c, *d, *x;
     double *residuo;
     int n;
@@ -146,7 +171,7 @@ int main(){
     scanf("%d", &n);
 
    // alocando memoria para a matriz
-    Matriz = (double **)malloc(n * sizeof(double *));
+    double **Matriz = alocaMatriz(n);
     
     //alocando memoria para o vetor b
     b = (double *)malloc(n * sizeof(double));
@@ -171,13 +196,8 @@ int main(){
     }
 
     // vetores matriz tridiagonais 
-    for(int i = 0; i < n; ++i){
-            d[i] = Matriz[i][i];
-            if(i < n-1){
-                a[i] = Matriz[i][i+1];
-                c[i] = Matriz[i+1][i];
-            }   
-    }
+    separaTridiagonais(Matriz, a, d, c);
+    
     double tempo;
     tempo = timestamp();
     eliminacaoDeGauss(Matriz, b, x, n);
@@ -195,66 +215,12 @@ int main(){
         printf("%.12f  ", residuo[i]);
 
     printf("\n\n");
-
-// printf("GS clássico  [ %d iterações ]:\n", it);
-// printf("<tempo_em_ms> ms\n");
-// for (int i = 0; i < n; ++i) {
-//     printf("%.2f   ", y[i]);
-// }
-// printf("\n");
-// for (int i = 0; i < n; ++i) {
-//     printf("r%d     ", i + 1);
-// }
-// printf("\n\n");
-
-// printf("EG 3-diagonal:\n");
-// printf("<tempo_em_ms> ms\n");
-// for (int i = 0; i < n; ++i) {
-//     printf("%.2f   ", z[i]);
-// }
-// printf("\n");
-// for (int i = 0; i < n; ++i) {
-//     printf("r%d     ", i + 1);
-// }
-// printf("\n\n");
-
-// printf("GS 3-diagonal [ %d iterações ]:\n", it); // Substitua "it" pelo número real de iterações
-// printf("<tempo_em_ms> ms\n");
-// for (int i = 0; i < n; ++i) {
-//     printf("%.2f   ", w[i]);
-// }
-// printf("\n");
-// for (int i = 0; i < n; ++i) {
-//     printf("r%d     ", i + 1);
-// }
-// printf("\n");
-//     //mostra a matriz lida fazer funcao
-//     printf("------- Matriz resultante -------\n");
-//     for(int i=0; i<n; ++i){
-//         for(int j=0; j<=n; ++j){
-//             if (j == n )
-//                 printf("| %.2f", b[i]);
-//             else
-//                 printf("%.2f ", Matriz[i][j]);
-//         }
-//         printf("\n");
-//     }
-    //printando os 3 vetores 
-    // for(int i=0; i<n; ++i)
-    //     printf("d[%d] = %.2f\n", i, d[i]);
-    // printf("\n");
-    // for(int i=0; i<n-1; ++i)
-    //     printf("a[%d] = %.2f\n", i, a[i]);
-    // printf("\n");
-    // for(int i=0; i<n-1; ++i)
-    //     printf("c[%d] = %.2f\n", i, c[i]);
-    // printf("\n");
-
     //liberando memoria
     for(int i = 0; i < n; ++i){
         free(Matriz[i]);
     }
-    free(Matriz);
+
+    desalocaMatriz(Matriz, n);
     free(a);
     free(b);
     free(d);
@@ -264,23 +230,3 @@ int main(){
 
     return 0;
 }
-/*
-EXEMPLO 
-
-3
-1 -3 2 11
--2 8 -1 -15
-4 -6 5 29
-
-4
-4 -1 0 0 3
--1 4 -1 0 6
-0 -1 4 -1 1
-0 0 -1 4 12
-
-4
-2 1 0 0 5
-3 4 2 0 6
-0 2 5 1 7
-0 0 3 6 8
-*/
