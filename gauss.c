@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 
 int encontraMax(double **A, int i, uint n) {
@@ -44,17 +45,13 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
         for (int j = 0; j < n; ++j) {
             Ax[i] += A[i][j] * x[j];
         }
-    }
-
-    //calcula o vetor de residuo
-    for (int i = 0; i < n; ++i) {
         residuo[i] = Ax[i] - b[i];
-
     }
 
      //libera memoria alocada
     free(Ax);
 }
+
 void trocaLinhas(double **A, double *b, int i, int iPivo){
     double *aux = A[i];
     A[i] = A[iPivo];
@@ -173,24 +170,55 @@ int main(){
                 c[i] = Matriz[i+1][i];
             }   
     }
+    double tempo = timestemp();
+    eliminacaoDeGauss(Matriz, b, x, n);
+    residuoMatriz(Matriz, x, b, residuo, n);
+    //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
+    //residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
+    tempo -= timestemp();
 
-    //eliminacaoDeGauss(Matriz, b, x, n);
-    //residuoMatriz(Matriz, x, b, residuo, n);
-    //tempo = timestemp()
-    eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
-    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
-    //timestemp() - tempo
+    printf("EG clássico:\n");
+    printf("%lf ms\n", tempo);
+    for (int i = 0; i < n; ++i)
+        printf("%.2f   ", x[i]);
+    printf("\n");
+    for (int i = 0; i < n; ++i)
+        printf("r%d     ", i + 1);
 
-    printf("Solução do sistema:\n");
-    for (int i = 0; i < n; ++i) {
-        printf("x[%d] = %.2f\n", i, x[i]);
-    }
+    printf("\n\n");
 
-    printf("Residuo do sistema:\n");
-    for (int i = 0; i < n; ++i) {
-        printf("residuo[%d] = %f\n", i, residuo[i]);
-    }
+// printf("GS clássico  [ %d iterações ]:\n", it);
+// printf("<tempo_em_ms> ms\n");
+// for (int i = 0; i < n; ++i) {
+//     printf("%.2f   ", y[i]);
+// }
+// printf("\n");
+// for (int i = 0; i < n; ++i) {
+//     printf("r%d     ", i + 1);
+// }
+// printf("\n\n");
 
+// printf("EG 3-diagonal:\n");
+// printf("<tempo_em_ms> ms\n");
+// for (int i = 0; i < n; ++i) {
+//     printf("%.2f   ", z[i]);
+// }
+// printf("\n");
+// for (int i = 0; i < n; ++i) {
+//     printf("r%d     ", i + 1);
+// }
+// printf("\n\n");
+
+// printf("GS 3-diagonal [ %d iterações ]:\n", it); // Substitua "it" pelo número real de iterações
+// printf("<tempo_em_ms> ms\n");
+// for (int i = 0; i < n; ++i) {
+//     printf("%.2f   ", w[i]);
+// }
+// printf("\n");
+// for (int i = 0; i < n; ++i) {
+//     printf("r%d     ", i + 1);
+// }
+printf("\n");
     //mostra a matriz lida fazer funcao
     printf("------- Matriz resultante -------\n");
     for(int i=0; i<n; ++i){
