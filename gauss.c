@@ -215,10 +215,6 @@ int main(){
         printf("%.12f  ", residuo[i]);
 
     printf("\n\n");
-    //liberando memoria
-    for(int i = 0; i < n; ++i){
-        free(Matriz[i]);
-    }
 
     desalocaMatriz(Matriz, n);
     free(a);
