@@ -28,7 +28,7 @@ void desalocaMatriz(double **matriz, int ordem)
     free(matriz);
 }
 
-void separaTridiagonais(double **Matriz, double *a, double *d, double *c){
+void separaTridiagonais(double **Matriz, double *a, double *d, double *c, int n){
     for(int i = 0; i < n; ++i){
             d[i] = Matriz[i][i];
             if(i < n-1){
@@ -196,8 +196,8 @@ int main(){
     }
 
     // vetores matriz tridiagonais 
-    separaTridiagonais(Matriz, a, d, c);
-    
+    separaTridiagonais(Matriz, a, d, c, n);
+
     double tempo;
     tempo = timestamp();
     eliminacaoDeGauss(Matriz, b, x, n);
