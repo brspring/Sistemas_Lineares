@@ -3,6 +3,12 @@
 #include <math.h>
 #include <time.h>
 
+rtime_t timestamp (void)
+{
+  struct timespec tp;
+  clock_gettime(CLOCK_MONOTONIC_RAW, &tp);
+  return ( (rtime_t) tp.tv_sec*1.0e3 + (rtime_t) tp.tv_nsec*1.0e-6 );
+}
 
 int encontraMax(double **A, int i, uint n) {
     double maxValor = fabs(A[i][0]);
@@ -218,28 +224,28 @@ int main(){
 // for (int i = 0; i < n; ++i) {
 //     printf("r%d     ", i + 1);
 // }
-printf("\n");
-    //mostra a matriz lida fazer funcao
-    printf("------- Matriz resultante -------\n");
-    for(int i=0; i<n; ++i){
-        for(int j=0; j<=n; ++j){
-            if (j == n )
-                printf("| %.2f", b[i]);
-            else
-                printf("%.2f ", Matriz[i][j]);
-        }
-        printf("\n");
-    }
+// printf("\n");
+//     //mostra a matriz lida fazer funcao
+//     printf("------- Matriz resultante -------\n");
+//     for(int i=0; i<n; ++i){
+//         for(int j=0; j<=n; ++j){
+//             if (j == n )
+//                 printf("| %.2f", b[i]);
+//             else
+//                 printf("%.2f ", Matriz[i][j]);
+//         }
+//         printf("\n");
+//     }
     //printando os 3 vetores 
-    for(int i=0; i<n; ++i)
-        printf("d[%d] = %.2f\n", i, d[i]);
-    printf("\n");
-    for(int i=0; i<n-1; ++i)
-        printf("a[%d] = %.2f\n", i, a[i]);
-    printf("\n");
-    for(int i=0; i<n-1; ++i)
-        printf("c[%d] = %.2f\n", i, c[i]);
-    printf("\n");
+    // for(int i=0; i<n; ++i)
+    //     printf("d[%d] = %.2f\n", i, d[i]);
+    // printf("\n");
+    // for(int i=0; i<n-1; ++i)
+    //     printf("a[%d] = %.2f\n", i, a[i]);
+    // printf("\n");
+    // for(int i=0; i<n-1; ++i)
+    //     printf("c[%d] = %.2f\n", i, c[i]);
+    // printf("\n");
 
     //liberando memoria
     for(int i = 0; i < n; ++i){
