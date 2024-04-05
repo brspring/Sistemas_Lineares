@@ -178,7 +178,7 @@ int main(){
     //residuoMatriz(Matriz, x, b, residuo, n);
     //tempo = timestemp()
     eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
-    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n) {
+    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
     //timestemp() - tempo
 
     printf("Solução do sistema:\n");
