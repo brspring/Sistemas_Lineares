@@ -17,6 +17,25 @@ int encontraMax(double **A, int i, uint n) {
     return indiceMax;
 }
 
+double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
+    double *Ax = (double *)malloc(n * sizeof(double));
+
+    //Calcula Ax
+    for (int i = 0; i < n; ++i) {
+        Ax[i] = 0.0;
+        for (int j = 0; j < n; ++j) {
+            Ax[i] += A[i][j] * x[j];
+        }
+    }
+
+    //Calcula o vetor de residuos r = b - Ax
+    for (int i = 0; i < n; ++i) {
+        r[i] = b[i] - Ax[i];
+    }
+
+     //Libera memoria alocada
+    free(Ax);
+}
 void trocaLinhas(double **A, double *b, int i, int iPivo){
     double *aux = A[i];
     A[i] = A[iPivo];
@@ -96,17 +115,19 @@ void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, d
 int main(){
     double **Matriz;
     double *a, *b, *c, *d, *x;
+    double *residuo;
     int n;
 
     //leitura dimensoes da mateiz
     scanf("%d", &n);
 
-   // Alocando memória para a matriz
+   // Alocando memoria para a matriz
     Matriz = (double **)malloc(n * sizeof(double *));
     
-    // Alocando memória para o vetor b
+    // Alocando memoria para o vetor b
     b = (double *)malloc(n * sizeof(double));
-
+    // Alocando memoria vetor residuo
+    double *residuo = (double *)malloc(n * sizeof(double));
     // Alocando memória para os vetores da matriz tridiagonal
     d = (double *)malloc(n * sizeof(double));
     a = (double *)malloc(n * sizeof(double)); 
@@ -135,6 +156,7 @@ int main(){
     }
 
     eliminacaoDeGauss(Matriz, b, x, n);
+    residuoMatriz(A, x, b, residuo, n);
     //tempo = timestemp()
     //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //timestemp() - tempo
@@ -143,6 +165,12 @@ int main(){
     for (int i = 0; i < n; ++i) {
         printf("x[%d] = %.2f\n", i, x[i]);
     }
+
+    printf("Residuo do sistema:\n");
+    for (int i = 0; i < n; ++i) {
+        printf("residuo[%d] = %.2f\n", i, residuo[i]);
+    }
+
     // mostra a matriz lida fazer funcao
     printf("------- Matriz resultante -------\n");
     for(int i=0; i<n; ++i){
