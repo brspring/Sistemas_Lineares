@@ -178,12 +178,12 @@ int main(){
                 c[i] = Matriz[i+1][i];
             }   
     }
-    double tempo = timestemp();
+    double tempo = timestamp();
     eliminacaoDeGauss(Matriz, b, x, n);
     residuoMatriz(Matriz, x, b, residuo, n);
     //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
-    tempo -= timestemp();
+    tempo -= timestamp();
 
     printf("EG clássico:\n");
     printf("%lf ms\n", tempo);
