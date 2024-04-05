@@ -17,10 +17,28 @@ int encontraMax(double **A, int i, uint n) {
     return indiceMax;
 }
 
+void residuoEliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, double *residuo, int n) {
+    //calcula Ax
+    for (int i = 0; i < n; ++i) {
+        residuo[i] = d[i] * x[i];
+        if (i > 0) {
+            residuo[i] += a[i - 1] * x[i - 1];
+        }
+        if (i < n - 1) {
+            residuo[i] += c[i] * x[i + 1];
+        }
+    }
+
+    //subtrai b
+    for (int i = 0; i < n; ++i) {
+        residuo[i] -= b[i];
+    }
+}
+
 double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
     double *Ax = (double *)malloc(n * sizeof(double));
 
-    //Calcula Ax
+    //calcula Ax
     for (int i = 0; i < n; ++i) {
         Ax[i] = 0.0;
         for (int j = 0; j < n; ++j) {
@@ -28,13 +46,13 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
         }
     }
 
-    //Calcula o vetor de residuo
+    //calcula o vetor de residuo
     for (int i = 0; i < n; ++i) {
         residuo[i] = Ax[i] - b[i];
 
     }
 
-     //Libera memoria alocada
+     //libera memoria alocada
     free(Ax);
 }
 void trocaLinhas(double **A, double *b, int i, int iPivo){
@@ -98,7 +116,7 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
 //     }
 // }
 void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
-    //Triangularizacao
+    //triangularizacao
     for(int i = 0; i < n-1; ++i){
             int k = i+1;
             double m = a[i]/d[i];
@@ -106,7 +124,7 @@ void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, d
             d[i+1] -= c[i] * m;
             b[i+1] -= b[i] * m;     
     }
-    //Retrosubstituicao
+    //retrosubstituicao
     x[n-1] = b[n-1] / d[n-1];
     for (int i = n-2; i >= 0; i--) {
         x[i] = (b[i] - c[i] * x[i+1]) / d [i];
@@ -122,20 +140,20 @@ int main(){
     //leitura dimensoes da mateiz
     scanf("%d", &n);
 
-   // Alocando memoria para a matriz
+   // alocando memoria para a matriz
     Matriz = (double **)malloc(n * sizeof(double *));
     
-    // Alocando memoria para o vetor b
+    //alocando memoria para o vetor b
     b = (double *)malloc(n * sizeof(double));
-    // Alocando memoria vetor residuo
+    //alocando memoria vetor residuo
     residuo = (double *)malloc(n * sizeof(double));
-    // Alocando memória para os vetores da matriz tridiagonal
+    //alocando memória para os vetores da matriz tridiagonal
     d = (double *)malloc(n * sizeof(double));
     a = (double *)malloc(n * sizeof(double)); 
     c = (double *)malloc(n*  sizeof(double));
     x = (double *)malloc(n*  sizeof(double));
 
-    // Lendo a matriz e o vetor b
+    //lendo a matriz e o vetor b
     for(int i=0; i < n; ++i){
         Matriz[i] = (double *)malloc((n + 1) * sizeof(double));
         for(int j=0; j <= n; ++j){
@@ -156,10 +174,11 @@ int main(){
             }   
     }
 
-    eliminacaoDeGauss(Matriz, b, x, n);
-    residuoMatriz(Matriz, x, b, residuo, n);
+    //eliminacaoDeGauss(Matriz, b, x, n);
+    //residuoMatriz(Matriz, x, b, residuo, n);
     //tempo = timestemp()
-    //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
+    eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
+    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n) {
     //timestemp() - tempo
 
     printf("Solução do sistema:\n");
@@ -172,7 +191,7 @@ int main(){
         printf("residuo[%d] = %f\n", i, residuo[i]);
     }
 
-    // mostra a matriz lida fazer funcao
+    //mostra a matriz lida fazer funcao
     printf("------- Matriz resultante -------\n");
     for(int i=0; i<n; ++i){
         for(int j=0; j<=n; ++j){
