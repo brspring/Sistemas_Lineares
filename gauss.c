@@ -3,6 +3,7 @@
 #include <math.h>
 #include <time.h>
 
+#define MAXIT 50
 typedef double rtime_t;
 
 rtime_t timestamp (void)
@@ -125,31 +126,38 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
     }
 }
 
+double max(double a, double b) {
+    return (a > b) ? a : b;
+}
+
 void gaussSeidel(double **A, double *b, double *x, uint n, double tol){
     double erro = 1.0 + tol;
-    int j, s;
+    int j, s, count = 0;
+    double *x_antigo = malloc(n * sizeof(double));
 
-    while(erro > tol){
+    while(erro > tol && count < MAXIT){
+        x_antigo = x;
+
         for(int i = 0; i < n; i++){
-            for(s=0, j=0; j < n; ++j){
+            x_antigo[i] = x[i];
+            for(j=0, s = 0; j < n; ++j){
                 if(i != j)
                     s += A[i][j] * x[j];
             }
-            x[i] = (b[i] - s)/A[i][i];   
-        }
+            x[i] = (b[i] - s)/A[i][i];
+            count++;
+            //calcula o erro
+            //erro = max(fabs(x[i] - x_antigo[i]));
 
-        // calcula o erro
-        erro = 0.0;
-        for(int i = 0; i < n; ++i){
-            double soma = 0.0;
-            for(int j = 0; j < n; ++j){
-                soma += A[i][j] * x[j];
-            }
-            erro += fabs(soma - b[i]);
         }
-     }
+        //erro = max(fabs(x[i] - x_antigo[i]));
+        //print vetor x
+        for(int i = 0; i < n; ++i)
+            printf("x[%d] = %.2f\n", i, x[i]);
+    }
+    
+    //free(x_antigo);
 }
-
 // void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, uint n, double tol){
 //     double erro = 1.0 + tol;
 //     int j, s;
@@ -245,6 +253,8 @@ int main(){
         }
         printf("\n");
     }
+    for(int i=0; i<n; ++i)
+        printf("x[%d] = %.2f\n", i, x[i]);
 
     desalocaMatriz(Matriz, n);
     free(a);
