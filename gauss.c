@@ -111,6 +111,10 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
             }
             b[k] -= m * b[i];
         }        
+    //zerando o vetor x
+    for(int i = 0; i < n; ++i)
+        x[i] = 0.0;
+
     //retrosubstituicao
     for(int i = n-1; i >= 0; --i){
         x[i] = b [i];
@@ -121,18 +125,30 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
     }
 }
 
-// void gaussSeidel(double A**, double *b, double *x, uint n, double tol){
-//     double erro = 1.0 + tol;
-//     int j, s;
-//     while(erro < tol){
-//         for(int i = 0; i < n; i++)
-//             for(s=0, j=0; j < n; ++j)
-//                 if(i != j)
-//                     s += A[i][j] * x[j];
+void gaussSeidel(double **A, double *b, double *x, uint n, double tol){
+    double erro = 1.0 + tol;
+    int j, s;
 
-//     x[i] = (b[i] - s)/A[i][i];
-//     }
-// }
+    while(erro > tol){
+        for(int i = 0; i < n; i++){
+            for(s=0, j=0; j < n; ++j){
+                if(i != j)
+                    s += A[i][j] * x[j];
+            }
+            x[i] = (b[i] - s)/A[i][i];   
+        }
+
+        // calcula o erro
+        erro = 0.0;
+        for(int i = 0; i < n; ++i){
+            double soma = 0.0;
+            for(int j = 0; j < n; ++j){
+                soma += A[i][j] * x[j];
+            }
+            erro += fabs(soma - b[i]);
+        }
+     }
+}
 
 // void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, uint n, double tol){
 //     double erro = 1.0 + tol;
@@ -166,6 +182,7 @@ int main(){
     double *a, *b, *c, *d, *x;
     double *residuo;
     int n;
+    double tol;
 
     //leitura dimensoes da mateiz
     scanf("%d", &n);
@@ -199,14 +216,16 @@ int main(){
     separaTridiagonais(Matriz, a, d, c, n);
 
     double tempo;
+    tol = 0.0001;
     tempo = timestamp();
-    eliminacaoDeGauss(Matriz, b, x, n);
-    residuoMatriz(Matriz, x, b, residuo, n);
+    //eliminacaoDeGauss(Matriz, b, x, n);
+    //residuoMatriz(Matriz, x, b, residuo, n);
+    gaussSeidel(Matriz, b, x, n, tol);
     //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
     tempo = timestamp() - tempo;
 
-    printf("EG clássico:\n");
+    /*printf("EG clássico:\n");
     printf("%.8f ms\n", tempo);
     for (int i = 0; i < n; ++i)
         printf("%lf   ", x[i]);
@@ -214,7 +233,18 @@ int main(){
     for (int i = 0; i < n; ++i)
         printf("%.12f  ", residuo[i]);
 
-    printf("\n\n");
+    printf("\n\n");*/
+    //mostra a matriz lida fazer funcao
+    printf("------- Matriz resultante -------\n");
+    for(int i=0; i<n; ++i){
+        for(int j=0; j<=n; ++j){
+            if (j == n )
+                printf("| %.2f", b[i]);
+            else
+                printf("%.2f ", Matriz[i][j]);
+        }
+        printf("\n");
+    }
 
     desalocaMatriz(Matriz, n);
     free(a);
