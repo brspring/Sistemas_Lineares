@@ -3,7 +3,7 @@
 #include <math.h>
 #include <time.h>
 #include <likwid.h>
-
+#include <likwid-marker.h>
 #include "utils.h"
 
 #define MAXIT 50
