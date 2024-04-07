@@ -12,7 +12,8 @@
 int main(){
     double *a, *b, *c, *d,  
     *resultadoEG, *resultadoGS, *resultadoEG3, *resultadoGS3,
-    *dS, *aS, *cS;
+    *dS, *aS, *cS,
+    *bEG, *bGS, *bEG3, *bGS3;
     double *residuo;
     int n;
     int countGS = 0;
@@ -42,6 +43,10 @@ int main(){
     dS = alocaVetor(n);
     aS = alocaVetor(n); 
     cS = alocaVetor(n);
+    bEG = alocaVetor(n);
+    bGS = alocaVetor(n);
+    bEG3 = alocaVetor(n);
+    bGS3 = alocaVetor(n);
 
     //alocando vetores resultado de cada metodo
     resultadoEG = alocaVetor(n);
@@ -62,7 +67,11 @@ int main(){
 
     copiaMatriz(Matriz, MatrizEG, n);
     copiaMatriz(Matriz, MatrizGS, n);
-
+    copiaVetorResultado(b, bEG, n);
+    copiaVetorResultado(b, bGS, n);
+    copiaVetorResultado(b, bEG3, n);
+    copiaVetorResultado(b, bGS3, n);
+    
     // vetores matriz tridiagonais 
     separaTridiagonais(Matriz, a, d, c, n);
     separaTridiagonais(Matriz, aS, dS, cS, n);
@@ -74,10 +83,10 @@ int main(){
     rtime_t tempoEG = timestamp();
     double *residuoEG = alocaVetor(n);
     LIKWID_MARKER_START ("eliminacaoDeGauss");
-    eliminacaoDeGauss(MatrizEG, b, resultadoEG, n);
+    eliminacaoDeGauss(MatrizEG, bEG, resultadoEG, n);
     LIKWID_MARKER_STOP ("eliminacaoDeGauss");
     tempoEG = timestamp() - tempoEG;
-    residuoMatriz(MatrizEG, resultadoEG, b, residuoEG, n);
+    residuoMatriz(MatrizEG, resultadoEG, bEG, residuoEG, n);
 
     printf("EG clássico:\n");
     printf("%.8f ms\n", tempoEG);
@@ -92,10 +101,10 @@ int main(){
     rtime_t  tempoGS = timestamp();
     double *residuoGS = alocaVetor(n);
     LIKWID_MARKER_START ("gaussSeidel");
-    gaussSeidel(MatrizGS, b, resultadoGS, n, tolerancia, &countGS);
+    gaussSeidel(MatrizGS, bGS, resultadoGS, n, tolerancia, &countGS);
     LIKWID_MARKER_STOP ("gaussSeidel");
     tempoGS = timestamp() - tempoGS;
-    residuoMatriz(MatrizGS, resultadoGS, b, residuoGS, n);
+    residuoMatriz(MatrizGS, resultadoGS, bGS, residuoGS, n);
 
     printf("GS Clássico [%d]:\n", countGS);
     printf("%.8f ms\n", tempoGS);
@@ -112,10 +121,10 @@ int main(){
     rtime_t  tempoEG3 = timestamp();
     double *residuoEG3 = alocaVetor(n);
     LIKWID_MARKER_START ("eliminacaoDeGaussTriDiagonais");
-    eliminacaoDeGaussTriDiagonais(a, d, c, b, resultadoEG3, n);
+    eliminacaoDeGaussTriDiagonais(a, d, c, bEG3, resultadoEG3, n);
     LIKWID_MARKER_STOP ("eliminacaoDeGaussTriDiagonais");
     tempoEG3 = timestamp() - tempoEG3;
-    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, resultadoEG3, residuoEG3, n);
+    residuoEliminacaoDeGaussTriDiagonais(a, d, c, bEG3, resultadoEG3, residuoEG3, n);
 
     printf("EG 3-diagonal:\n");
     printf("%.8f ms\n", tempoEG3);
@@ -130,10 +139,10 @@ int main(){
     rtime_t  tempoGS3 = timestamp();
     double *residuoGS3 = malloc(n * sizeof(double));
     LIKWID_MARKER_START ("gaussSeidelTriDiagonais");
-    gaussSeidelTriDiagonais(aS, dS, cS, b, resultadoGS3, n, tolerancia, &countGS3);
+    gaussSeidelTriDiagonais(aS, dS, cS, bGS3, resultadoGS3, n, tolerancia, &countGS3);
     LIKWID_MARKER_STOP ("gaussSeidelTriDiagonais");
     tempoGS3 = timestamp() - tempoGS3;
-    residuoEliminacaoDeGaussTriDiagonais(aS, dS, cS, b, resultadoGS3, residuoGS3, n);
+    residuoEliminacaoDeGaussTriDiagonais(aS, dS, cS, bGS3, resultadoGS3, residuoGS3, n);
 
     printf("GS 3-diagonal[%d]:\n", countGS3);
     printf("%.8f ms\n", tempoGS3);
@@ -163,6 +172,9 @@ int main(){
     free(d);
     free(c);
     free(residuo);
+    free(bEG);
+    free(bGS);
+    free(bEG3);
 
     LIKWID_MARKER_CLOSE;
     return 0;
