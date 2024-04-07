@@ -1,19 +1,18 @@
-# PROGRAMA
-PROG = perfSL
-OBJS = main.o mod1.o mod2.o mod3.o utils.o
+PROG = gauss
+OBJS = gauss.o utils.o
 
 # Compilador
 CC     = gcc
 
 # Diretório onde a biblioteca LIKWID está instalada
-LIKWID_DIR = /home/soft/likwid
+# LIKWID_DIR = /home/soft/likwid
 
 # Acrescentar onde apropriado as opções para incluir uso da biblioteca LIKWID
-CFLAGS = -O0 -DLIKWID_PERFMON -I$(LIKWID_DIR)/include
-LFLAGS = -L$(LIKWID_DIR)/lib -llikwid -lm
+# CFLAGS = -O0 -DLIKWID_PERFMON -I$(LIKWID_DIR)/include
+# LFLAGS = -L$(LIKWID_DIR)/lib -llikwid -lm
 
 # Lista de arquivos para distribuição
-DISTFILES = *.c *.h LEIAME* Makefile
+DISTFILES = gauss.c utils.c utils.h Makefile
 DISTDIR = `basename ${PWD}`
 
 .PHONY: all clean purge dist
@@ -28,11 +27,11 @@ $(PROG): $(OBJS)
 
 clean:
 	@echo "Limpando sujeira ..."
-	@rm -f *~ *.bak
+	@rm -f *~ *.bak $(OBJS)
 
 purge:  clean
 	@echo "Limpando tudo ..."
-	@rm -f $(PROG) $(OBJS) core a.out $(DISTDIR) $(DISTDIR).tar
+	@rm -f $(PROG) core a.out $(DISTDIR) $(DISTDIR).tar
 
 dist: purge
 	@echo "Gerando arquivo de distribuição ($(DISTDIR).tar) ..."

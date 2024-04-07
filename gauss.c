@@ -223,7 +223,7 @@ int main(){
     double *residuoGS = alocaVetor(n);
     gaussSeidel(MatrizGS, b, resultadoGS, n, tolerancia, &countGS);
     tempoGS = timestamp() - tempoGS;
-    residuoMatriz(MatrizGS, residuoGS, b, residuoGS, n);
+    residuoMatriz(MatrizGS, resultadoGS, b, residuoGS, n);
 
     printf("GS Clássico [%d]:\n", countGS);
     printf("%.8f ms\n", tempoGS);
