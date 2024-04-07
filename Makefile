@@ -5,11 +5,11 @@ OBJS = gauss.o utils.o
 CC     = gcc
 
 # Diretório onde a biblioteca LIKWID está instalada
-# LIKWID_DIR = /home/soft/likwid
+LIKWID_DIR = /home/soft/likwid
 
 # Acrescentar onde apropriado as opções para incluir uso da biblioteca LIKWID
-# CFLAGS = -O0 -DLIKWID_PERFMON -I$(LIKWID_DIR)/include
-# LFLAGS = -L$(LIKWID_DIR)/lib -llikwid -lm
+CFLAGS = -O0 -DLIKWID_PERFMON -I$(LIKWID_DIR)/include
+LFLAGS = -L$(LIKWID_LIB) -llikwid
 
 # Lista de arquivos para distribuição
 DISTFILES = gauss.c utils.c utils.h Makefile
