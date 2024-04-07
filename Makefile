@@ -1,5 +1,5 @@
 PROG = perfSL
-OBJS = gauss.o utils.o
+OBJS = main.o utils.o resolucoes_SL.o
 
 # Compilador
 CC     = gcc
@@ -12,7 +12,7 @@ CFLAGS = -O0 -DLIKWID_PERFMON -I$(LIKWID_DIR)/include
 LFLAGS = -L$(LIKWID_LIB) -llikwid
 
 # Lista de arquivos para distribuição
-DISTFILES = gauss.c utils.c utils.h Makefile
+DISTFILES = main.c utils.c utils.h resolucoes_SL.c resolucoes_SL.h Makefile
 DISTDIR = `basename ${PWD}`
 
 .PHONY: all clean purge dist
