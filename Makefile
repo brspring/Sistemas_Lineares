@@ -1,4 +1,4 @@
-PROG = gauss
+PROG = perfSL
 OBJS = gauss.o utils.o
 
 # Compilador
