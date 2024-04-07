@@ -32,21 +32,36 @@
 // printf("\n");
 
 
+// modulariza
+// likwid
+// script
+// documentacao
+
+/*
+    tempo = timestamp() - tempo;
+    residuoMatriz(A, x, b, residuo, n);
+
+    printf("EG clássico:\n");
+    printf("%.8f ms\n", tempo);
+    for (int i = 0; i < n; ++i)
+        printf("%lf   ", x[i]);
+    printf("\n");
+    for (int i = 0; i < n; ++i)
+        printf("%.12f  ", residuo[i]);
+    printf("\n\n");
 
 
-
-
-////mostra a matriz lida fazer funcao
-//     printf("------- Matriz resultante -------\n");
-//     for(int i=0; i<n; ++i){
-//         for(int j=0; j<=n; ++j){
-//             if (j == n )
-//                 printf("| %.2f", b[i]);
-//             else
-//                 printf("%.2f ", Matriz[i][j]);
-//         }
-//         printf("\n");
-//     }
+//mostra a matriz lida fazer funcao
+    printf("------- Matriz resultante -------\n");
+    for(int i=0; i<n; ++i){
+         for(int j=0; j<=n; ++j){
+             if (j == n )
+                 printf("| %.2f", b[i]);
+            else
+                 printf("%.2f ", Matriz[i][j]);
+         }
+         printf("\n");
+    }
     //printando os 3 vetores 
     // for(int i=0; i<n; ++i)
     //     printf("d[%d] = %.2f\n", i, d[i]);
@@ -58,7 +73,7 @@
     //     printf("c[%d] = %.2f\n", i, c[i]);
     // printf("\n");
 
-
+*/
     /*
 EXEMPLO 
 

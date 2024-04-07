@@ -87,7 +87,7 @@ void eliminacaoDeGauss(double **A, double *b, double *x, int n){
 }
 
 void gaussSeidel(double **A, double *b, double *x, int n, double tol){
-    double tempo = timestamp();
+    rtime_t  tempo = timestamp();
     double erro = 1.0;
     double s;
     int j, count = 0;
@@ -130,7 +130,7 @@ void gaussSeidel(double **A, double *b, double *x, int n, double tol){
 }
 
 void gaussSeidelTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n, double tol){
-    double tempo = timestamp();
+    rtime_t  tempo = timestamp();
     double erro = 1.0;
     int j, s;
     double *residuo = malloc(n * sizeof(double));
@@ -171,7 +171,7 @@ void gaussSeidelTriDiagonais(double *a, double *d, double *c, double *b, double 
 }
 
 void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
-    double tempo = timestamp();
+    rtime_t  tempo = timestamp();
     double *residuo = alocaVetor(n);
     //triangularizacao
     for(int i = 0; i < n-1; ++i){
