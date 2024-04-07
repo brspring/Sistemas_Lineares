@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-//#include <likwid.h>
+#include <likwid.h>
 //#include <likwid-marker.h>
 #include "utils.h"
 #include "resolucoes_SL.h"
