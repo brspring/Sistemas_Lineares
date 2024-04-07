@@ -126,50 +126,75 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
     }
 }
 
-double max(double a, double b) {
-    return (a > b) ? a : b;
+double encontrarMaiorSubtracao(double *a, double *b, int n){
+    double maior = 0.0;
+    for(int i = 0; i < n; ++i){
+        if(fabs(a[i] - b[i]) > maior){
+            maior = fabs(a[i] - b[i]);
+        }
+    }
+    //printa vetores
+    return maior;
 }
 
-void gaussSeidel(double **A, double *b, double *x, uint n, double tol){
-    double erro = 1.0 + tol;
-    int j, s, count = 0;
+void gaussSeidel(double **A, double *b, double *x, int n, double tol){
+    double erro = 1.0;
+    double s;
+    int j, count = 0;
     double *x_antigo = malloc(n * sizeof(double));
 
-    while(erro > tol && count < MAXIT){
-        x_antigo = x;
-
+    while(erro > tol && count < MAXIT ){
         for(int i = 0; i < n; i++){
             x_antigo[i] = x[i];
-            for(j=0, s = 0; j < n; ++j){
+            s = 0.0;
+            printf("LINHA: [%d]\n", i);
+            for(j=0; j < n; ++j){
                 if(i != j)
-                    s += A[i][j] * x[j];
+                    s = (A[i][j] * x[j]) + s;
+                    printf("x[%d] = %.2f  ", i, x[i]);
+                    printf("s = %.2f\n", s);
             }
             x[i] = (b[i] - s)/A[i][i];
-            count++;
-            //calcula o erro
-            //erro = max(fabs(x[i] - x_antigo[i]));
-
         }
-        //erro = max(fabs(x[i] - x_antigo[i]));
-        //print vetor x
-        for(int i = 0; i < n; ++i)
-            printf("x[%d] = %.2f\n", i, x[i]);
-    }
-    
-    //free(x_antigo);
-}
-// void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, uint n, double tol){
-//     double erro = 1.0 + tol;
-//     int j, s;
-//     while(erro < tol){
-//         for(int i = 0; i < n; i++)
-//             for(s=0, j=0; j < n; ++j)
-//                 if(i != j)
-//                     s += A[i][j] * x[j];
 
-//     x[i] = (b[i] - s)/A[i][i];
-//     }
-// }
+        if(count == 0)
+            erro = 1.0;
+        else
+            erro = encontrarMaiorSubtracao(x, x_antigo, n);
+        count++;
+    }
+    printf("Iteracoes: %d\n", count);
+}
+
+void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, int n, double tol){
+    double erro = 1.0;
+    int j, s;
+    double *x_antigo = malloc(n * sizeof(double));
+    int count = 0;
+
+    while(erro > tol && count < MAXIT ){
+            s = 0.0;
+
+            x[0] = (b[0] - (c[0] * x[1])) / d[0];
+
+            for(int i = 0; i < n; ++i){
+                x_antigo[i] = x[i];
+            }
+            for (int i=1; i < n-1; ++i){
+                x[i] = (b[i] - a[i-1] * x[i-1] - c[i] * x[i+1]) / d[i];
+            }
+
+            x[n-1] = (b[n-1] - a[n-2] * x[n-2]) / d[n-1];
+
+        if(count == 0)
+            erro = 1.0;
+        else
+            erro = encontrarMaiorSubtracao(x, x_antigo, n);
+        count++;
+        printf("Iteracoes: %d\n", count);
+    }
+}
+
 void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
     //triangularizacao
     for(int i = 0; i < n-1; ++i){
@@ -227,8 +252,9 @@ int main(){
     tol = 0.0001;
     tempo = timestamp();
     //eliminacaoDeGauss(Matriz, b, x, n);
-    //residuoMatriz(Matriz, x, b, residuo, n);
-    gaussSeidel(Matriz, b, x, n, tol);
+    //gaussSeidel(Matriz, b, x, n, tol);
+    gaussSeidelTriDiagonais(d, a, c, b, x, n, tol);
+    residuoMatriz(Matriz, x, b, residuo, n);
     //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
     //residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
     tempo = timestamp() - tempo;
@@ -238,21 +264,9 @@ int main(){
     for (int i = 0; i < n; ++i)
         printf("%lf   ", x[i]);
     printf("\n");
-    for (int i = 0; i < n; ++i)
+    */for (int i = 0; i < n; ++i)
         printf("%.12f  ", residuo[i]);
-
-    printf("\n\n");*/
-    //mostra a matriz lida fazer funcao
-    printf("------- Matriz resultante -------\n");
-    for(int i=0; i<n; ++i){
-        for(int j=0; j<=n; ++j){
-            if (j == n )
-                printf("| %.2f", b[i]);
-            else
-                printf("%.2f ", Matriz[i][j]);
-        }
-        printf("\n");
-    }
+    printf("\n\n");
     for(int i=0; i<n; ++i)
         printf("x[%d] = %.2f\n", i, x[i]);
 
