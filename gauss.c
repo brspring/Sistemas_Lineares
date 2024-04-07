@@ -153,6 +153,8 @@ int main(){
     int countGS3 = 0;
     double tolerancia;
 
+    LIKWID_MARKER_INIT;
+
     //leitura dimensoes da matriz
     scanf("%d", &n);
 
@@ -203,9 +205,12 @@ int main(){
     tolerancia = 0.0001;
 
     // ELIMINACAO DE GAUSS CLASSICA
+
     rtime_t tempoEG = timestamp();
     double *residuoEG = alocaVetor(n);
+    LIKWID_MARKER_START ("eliminacaoDeGauss");
     eliminacaoDeGauss(MatrizEG, b, resultadoEG, n);
+    LIKWID_MARKER_STOP ("eliminacaoDeGauss");
     tempoEG = timestamp() - tempoEG;
     residuoMatriz(MatrizEG, resultadoEG, b, residuoEG, n);
 
@@ -221,7 +226,9 @@ int main(){
     // GAUSS SEIDEL CLASSICO
     rtime_t  tempoGS = timestamp();
     double *residuoGS = alocaVetor(n);
+    LIKWID_MARKER_START ("gaussSeidel");
     gaussSeidel(MatrizGS, b, resultadoGS, n, tolerancia, &countGS);
+    LIKWID_MARKER_STOP ("gaussSeidel");
     tempoGS = timestamp() - tempoGS;
     residuoMatriz(MatrizGS, resultadoGS, b, residuoGS, n);
 
@@ -239,7 +246,9 @@ int main(){
     // GAUSS SEIDEL 3 DIAGONAIS
     rtime_t  tempoEG3 = timestamp();
     double *residuoEG3 = alocaVetor(n);
+    LIKWID_MARKER_START ("eliminacaoDeGaussTriDiagonais");
     eliminacaoDeGaussTriDiagonais(a, d, c, b, resultadoEG3, n);
+    LIKWID_MARKER_STOP ("eliminacaoDeGaussTriDiagonais");
     tempoEG3 = timestamp() - tempoEG3;
     residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, resultadoEG3, residuoEG3, n);
 
@@ -255,7 +264,9 @@ int main(){
     // GAUSS SEIDEL 3 DIAGONAIS
     rtime_t  tempoGS3 = timestamp();
     double *residuoGS3 = malloc(n * sizeof(double));
+    LIKWID_MARKER_START ("gaussSeidelTriDiagonais");
     gaussSeidelTriDiagonais(aS, dS, cS, b, resultadoGS3, n, tolerancia, &countGS3);
+    LIKWID_MARKER_STOP ("gaussSeidelTriDiagonais");
     tempoGS3 = timestamp() - tempoGS3;
     residuoEliminacaoDeGaussTriDiagonais(aS, dS, cS, b, resultadoGS3, residuoGS3, n);
 
@@ -288,5 +299,6 @@ int main(){
     free(c);
     free(residuo);
 
+    LIKWID_MARKER_CLOSE;
     return 0;
 }
