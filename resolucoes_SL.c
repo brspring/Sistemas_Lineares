@@ -45,9 +45,9 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
 void eliminacaoDeGauss(double **A, double *b, double *x, int n){
     //triangularizacao
     for(int i=0; i<n; ++i){
-        int iPivo = encontraMax(A, i, n);
-        if(i != iPivo)
-            trocaLinhas(A, b, i, iPivo);
+        //int iPivo = encontraMax(A, i, n);
+        //if(i != iPivo)
+            //trocaLinhas(A, b, i, iPivo);
 
         for(int k=i+1; k < n; ++k){
             double m = A[k][i]/A[i][i];
