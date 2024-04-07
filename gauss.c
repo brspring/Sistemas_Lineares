@@ -3,55 +3,9 @@
 #include <math.h>
 #include <time.h>
 
+#include "utils.h"
+
 #define MAXIT 50
-typedef double rtime_t;
-
-rtime_t timestamp (void)
-{
-  struct timespec tp;
-  clock_gettime(CLOCK_MONOTONIC_RAW, &tp);
-  return ( (rtime_t) tp.tv_sec*1.0e3 + (rtime_t) tp.tv_nsec*1.0e-6 );
-}
-
-double **alocaMatriz(int ordem)
-{
-    double **matriz;
-    matriz = (double **)calloc(ordem, sizeof(double *));
-    for (int i = 0; i < ordem; i++)
-        matriz[i] = (double *)calloc(ordem, sizeof(double));
-    return matriz;
-}
-
-void desalocaMatriz(double **matriz, int ordem)
-{
-    for (int i = 0; i < ordem; i++)
-        free(matriz[i]);
-    free(matriz);
-}
-
-void separaTridiagonais(double **Matriz, double *a, double *d, double *c, int n){
-    for(int i = 0; i < n; ++i){
-            d[i] = Matriz[i][i];
-            if(i < n-1){
-                a[i] = Matriz[i][i+1];
-                c[i] = Matriz[i+1][i];
-            }   
-    }
-}
-
-int encontraMax(double **A, int i, uint n) {
-    double maxValor = fabs(A[i][0]);
-    int indiceMax = 0;
-
-    for (int j = 1; j < n; j++) {
-        if (fabs(A[i][j]) > maxValor) {
-            maxValor = fabs(A[i][j]);
-            indiceMax = j;
-        }
-    }
-
-    return indiceMax;
-}
 
 void residuoEliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, double *residuo, int n) {
     //calcula Ax
@@ -87,20 +41,13 @@ double residuoMatriz(double **A, double *x, double *b, double *residuo, int n) {
     free(Ax);
 }
 
-void trocaLinhas(double **A, double *b, int i, int iPivo){
-    double *aux = A[i];
-    A[i] = A[iPivo];
-    A[iPivo] = aux;
+void eliminacaoDeGauss(double **A, double *b, double *x, int n){
+    double tempo = timestamp();
+    double *residuo = malloc(n * sizeof(double));
 
-    double auxB = b[i];
-    b[i] = b[iPivo];
-    b[iPivo] = auxB;
-}
-
-void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
     //triangularizacao
     for(int i=0; i<n; ++i){
-        uint iPivo = encontraMax(A, i, n);
+        int iPivo = encontraMax(A, i, n);
         if(i != iPivo)
             trocaLinhas(A, b, i, iPivo);
 
@@ -112,47 +59,48 @@ void eliminacaoDeGauss(double **A, double *b, double *x, uint n){
             }
             b[k] -= m * b[i];
         }        
-    //zerando o vetor x
-    for(int i = 0; i < n; ++i)
-        x[i] = 0.0;
+        //zerando o vetor x
+        for(int i = 0; i < n; ++i)
+            x[i] = 0.0;
 
-    //retrosubstituicao
-    for(int i = n-1; i >= 0; --i){
-        x[i] = b [i];
-        for(int j = i+1; j < n; ++j)
-            x[i] -= A[i][j] * x[j];
-        x[i] /= A[i][i];
-    }
-    }
-}
-
-double encontrarMaiorSubtracao(double *a, double *b, int n){
-    double maior = 0.0;
-    for(int i = 0; i < n; ++i){
-        if(fabs(a[i] - b[i]) > maior){
-            maior = fabs(a[i] - b[i]);
+        //retrosubstituicao
+        for(int i = n-1; i >= 0; --i){
+            x[i] = b [i];
+            for(int j = i+1; j < n; ++j)
+                x[i] -= A[i][j] * x[j];
+            x[i] /= A[i][i];
         }
     }
-    //printa vetores
-    return maior;
+    tempo = timestamp() - tempo;
+    residuoMatriz(A, x, b, residuo, n);
+
+    printf("EG clássico:\n");
+    printf("%.8f ms\n", tempo);
+    for (int i = 0; i < n; ++i)
+        printf("%.12f   ", x[i]);
+    printf("\n");
+    for (int i = 0; i < n; ++i)
+        printf("%.12f  ", residuo[i]);
+    printf("\n\n");
+
+    free(residuo);
 }
 
 void gaussSeidel(double **A, double *b, double *x, int n, double tol){
+    double tempo = timestamp();
     double erro = 1.0;
     double s;
     int j, count = 0;
     double *x_antigo = malloc(n * sizeof(double));
+    double *residuo = malloc(n * sizeof(double));
 
     while(erro > tol && count < MAXIT ){
         for(int i = 0; i < n; i++){
             x_antigo[i] = x[i];
             s = 0.0;
-            printf("LINHA: [%d]\n", i);
             for(j=0; j < n; ++j){
                 if(i != j)
                     s = (A[i][j] * x[j]) + s;
-                    printf("x[%d] = %.2f  ", i, x[i]);
-                    printf("s = %.2f\n", s);
             }
             x[i] = (b[i] - s)/A[i][i];
         }
@@ -163,12 +111,29 @@ void gaussSeidel(double **A, double *b, double *x, int n, double tol){
             erro = encontrarMaiorSubtracao(x, x_antigo, n);
         count++;
     }
-    printf("Iteracoes: %d\n", count);
+    tempo = timestamp() - tempo;
+    residuoMatriz(A, x, b, residuo, n);
+
+    printf("GS Clássico [%d]:\n", count);
+    printf("%.8f ms\n", tempo);
+    for (int i = 0; i < n; ++i) {
+        printf("%.12f  ", x[i]);
+    }
+    printf("\n");
+    for (int i = 0; i < n; ++i) {
+        printf("%.12f  ", residuo[i]);
+    }
+    printf("\n\n");
+
+    free(x_antigo);
+    free(residuo);
 }
 
-void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double *x, int n, double tol){
+void gaussSeidelTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n, double tol){
+    double tempo = timestamp();
     double erro = 1.0;
     int j, s;
+    double *residuo = malloc(n * sizeof(double));
     double *x_antigo = malloc(n * sizeof(double));
     int count = 0;
 
@@ -191,11 +156,23 @@ void gaussSeidelTriDiagonais(double *d, double *a, double *c, double *b, double 
         else
             erro = encontrarMaiorSubtracao(x, x_antigo, n);
         count++;
-        printf("Iteracoes: %d\n", count);
     }
+    tempo = timestamp() - tempo;
+    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
+
+    printf("GS 3-diagonal[%d]:\n", count);
+    printf("%.8f ms\n", tempo);
+    for (int i = 0; i < n; ++i)
+        printf("%.12f  ", x[i]);
+    printf("\n");
+    for (int i = 0; i < n; ++i)
+        printf("%.12f  ", residuo[i]);
+    printf("\n\n");
 }
 
 void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, double *x, int n){
+    double tempo = timestamp();
+    double *residuo = alocaVetor(n);
     //triangularizacao
     for(int i = 0; i < n-1; ++i){
             int k = i+1;
@@ -209,29 +186,56 @@ void eliminacaoDeGaussTriDiagonais(double *a, double *d, double *c, double *b, d
     for (int i = n-2; i >= 0; i--) {
         x[i] = (b[i] - c[i] * x[i+1]) / d [i];
     }
+    tempo = timestamp() - tempo;
+    residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
+
+    printf("EG 3-diagonal:\n");
+    printf("%.8f ms\n", tempo);
+    for (int i = 0; i < n; ++i)
+        printf("%.12f  ", x[i]);
+    printf("\n");
+    for (int i = 0; i < n; ++i)
+        printf("%.12f  ", residuo[i]);
+    printf("\n\n");
+
+    free(residuo);
 }
 
 int main(){
-    double *a, *b, *c, *d, *x;
+    double *a, *b, *c, *d,  
+    *resultadoEG, *resultadoGS, *resultado3EG, *resultado3GS,
+    *dS, *aS, *cS;
     double *residuo;
     int n;
-    double tol;
+    double tolerancia;
 
-    //leitura dimensoes da mateiz
+    //leitura dimensoes da matriz
     scanf("%d", &n);
 
-   // alocando memoria para a matriz
+   // alocando memoria para as matrizes
     double **Matriz = alocaMatriz(n);
-    
+    double **MatrizGS = alocaMatriz(n);
+    double **MatrizEG = alocaMatriz(n);
+
     //alocando memoria para o vetor b
-    b = (double *)malloc(n * sizeof(double));
+    b = alocaVetor(n);
+
     //alocando memoria vetor residuo
-    residuo = (double *)malloc(n * sizeof(double));
+    residuo = alocaVetor(n);
+
     //alocando memória para os vetores da matriz tridiagonal
-    d = (double *)malloc(n * sizeof(double));
-    a = (double *)malloc(n * sizeof(double)); 
-    c = (double *)malloc(n*  sizeof(double));
-    x = (double *)malloc(n*  sizeof(double));
+    d = alocaVetor(n);
+    a = alocaVetor(n); 
+    c = alocaVetor(n);
+    dS = alocaVetor(n);
+    aS = alocaVetor(n); 
+    cS = alocaVetor(n);
+
+    //alocando vetores resultado de cada metodo
+    resultadoEG = alocaVetor(n);
+    resultadoGS = alocaVetor(n);
+    resultado3EG = alocaVetor(n);
+    resultado3GS = alocaVetor(n);
 
     //lendo a matriz e o vetor b
     for(int i=0; i < n; ++i){
@@ -245,37 +249,34 @@ int main(){
         }
     }
 
+    copiaMatriz(Matriz, MatrizEG, n);
+    copiaMatriz(Matriz, MatrizGS, n);
+
     // vetores matriz tridiagonais 
     separaTridiagonais(Matriz, a, d, c, n);
+    separaTridiagonais(Matriz, aS, dS, cS, n);
 
-    double tempo;
-    tol = 0.0001;
-    tempo = timestamp();
-    //eliminacaoDeGauss(Matriz, b, x, n);
-    //gaussSeidel(Matriz, b, x, n, tol);
-    gaussSeidelTriDiagonais(d, a, c, b, x, n, tol);
-    residuoMatriz(Matriz, x, b, residuo, n);
-    //eliminacaoDeGaussTriDiagonais(a, d, c, b, x, n);
-    //residuoEliminacaoDeGaussTriDiagonais(a, d, c, b, x, residuo, n);
-    tempo = timestamp() - tempo;
-
-    /*printf("EG clássico:\n");
-    printf("%.8f ms\n", tempo);
-    for (int i = 0; i < n; ++i)
-        printf("%lf   ", x[i]);
-    printf("\n");
-    */for (int i = 0; i < n; ++i)
-        printf("%.12f  ", residuo[i]);
-    printf("\n\n");
-    for(int i=0; i<n; ++i)
-        printf("x[%d] = %.2f\n", i, x[i]);
+    tolerancia = 0.0001;
+    
+    eliminacaoDeGauss(MatrizEG, b, resultadoEG, n);
+    gaussSeidel(MatrizGS, b, resultadoGS, n, tolerancia);
+    eliminacaoDeGaussTriDiagonais(a, d, c, b, resultado3EG, n);
+    gaussSeidelTriDiagonais(aS, dS, cS, b, resultado3GS, n, tolerancia);
 
     desalocaMatriz(Matriz, n);
+    desalocaMatriz(MatrizGS, n);
+    desalocaMatriz(MatrizEG, n);
     free(a);
+    free(resultado3EG);
+    free(resultado3GS);
+    free(resultadoEG);
+    free(resultadoGS);
+    free(dS);
+    free(aS);
+    free(cS);
     free(b);
     free(d);
     free(c);
-    free(x);
     free(residuo);
 
     return 0;
